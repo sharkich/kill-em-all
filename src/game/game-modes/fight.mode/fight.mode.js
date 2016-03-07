@@ -36,6 +36,9 @@ class FightGameMode extends GameMode {
         this._initCircle();
 
         events.on('game:mousewheel', this.zoom, this);
+
+        this.dragContainer.on('pressmove', this._drag.bind(this));
+        this.dragContainer.on('pressup', this._dragStop.bind(this));
     }
 
     _initCircle () {
@@ -49,6 +52,49 @@ class FightGameMode extends GameMode {
         }
     }
 
+    // on pressmove
+    _drag (evt) {
+        console.log(this.dragContainer);
+        if (!this.offset) {
+            this.offset = {
+                x: evt.stageX - this.dragContainer.x,
+                y: evt.stageY - this.dragContainer.y
+            };
+        }
+
+        this.dragToX(evt.stageX - this.offset.x);
+        this.dragToY(evt.stageY - this.offset.y);
+
+        console.log(this.dragContainer.x, this.dragContainer.y);
+
+        this.show();
+    }
+
+    // on pressup
+    _dragStop () {
+        this.offset = null;
+    }
+
+    dragToX(x) {
+        const MAX_CONVAS_OFFSET_X = this.config.fight.map.width - this.config.canvas.width;
+        this.dragContainer.x = this._checkCoordinat(x, MAX_CONVAS_OFFSET_X * this.scale);
+    }
+
+    dragToY(y) {
+        const MAX_CONVAS_OFFSET_Y = this.config.fight.map.height - this.config.canvas.height;
+        this.dragContainer.y = this._checkCoordinat(y, MAX_CONVAS_OFFSET_Y * this.scale);
+    }
+
+    _checkCoordinat(value, maxValue) {
+        if (value > 0) {
+            return 0;
+        }
+        if (Math.abs(value) > maxValue) {
+            return -maxValue;
+        }
+        return value;
+    }
+
     /**
      * Show game mode
      */
@@ -58,8 +104,31 @@ class FightGameMode extends GameMode {
         //this.stage.update();
     }
 
+    // on mousewheel
     zoom (evt) {
-        console.log('zoom', evt);
+        const delta = evt.deltaY || evt.detail || evt.wheelDelta;
+
+        if (delta < 0) {
+            this.scale += 0.01;
+        } else {
+            this.scale -= 0.01;
+        }
+
+        if (this.scale > 1.5) {
+            this.scale = 1.5;
+        } else if (this.scale < 0.5) {
+            this.scale = 0.5;
+        }
+        /*
+         800 - 0.7
+         600 - 0.5625
+         */
+
+        this.stage.scaleX = this.scale;
+        this.stage.scaleY = this.scale;
+
+        console.log('zoom', this.scale);
+        this.show();
     }
 
     /**
