@@ -15,7 +15,7 @@ class Circle {
      */
     get view () {
         let view = new createjs.Shape();
-        view.graphics.beginFill('DeepSkyBlue').drawCircle(this.x, this.y, this.radius);
+        view.graphics.beginFill('black').drawCircle(this.x, this.y, this.radius);
         view.x = 100;
         view.y = 100;
         return view;
