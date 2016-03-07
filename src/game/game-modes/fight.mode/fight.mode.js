@@ -4,6 +4,9 @@ import math from '../../../helpers/math.helper';
 import GameMode from '../game.mode';
 import Circle from '../../_components/circle/circle';
 
+import Events from '../../../helpers/events/events';
+let events = new Events();
+
 class FightGameMode extends GameMode {
     /**
      * Init Game mode
@@ -31,6 +34,8 @@ class FightGameMode extends GameMode {
         this.dragContainer.addChild(dragBox);
 
         this._initCircle();
+
+        events.on('game:mousewheel', this.zoom, this);
     }
 
     _initCircle () {
@@ -51,6 +56,10 @@ class FightGameMode extends GameMode {
         super.show();
 
         //this.stage.update();
+    }
+
+    zoom (evt) {
+        console.log('zoom', evt);
     }
 
     /**

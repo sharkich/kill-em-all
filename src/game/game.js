@@ -27,6 +27,7 @@ export class Game {
         console.log('Game constructor');
         this.config = config;
 
+        this.canvasId = canvasId;
         this.stage = new createjs.Stage(canvasId);
         createjs.Touch.enable(this.stage);
 
@@ -34,6 +35,12 @@ export class Game {
 
         events.on('game:run', this.run, this);
         events.on('game:change-mode', this.changeGameMode, this);
+
+        document.getElementById(canvasId).addEventListener('mousewheel', (evt) => {
+            evt.preventDefault();
+            evt.stopImmediatePropagation();
+            events.do('game:mousewheel', evt);
+        });
     }
 
     /**
