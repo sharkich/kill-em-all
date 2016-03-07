@@ -2,11 +2,14 @@
 const createjs = window.createjs;
 
 import Events from './../helpers/events/events';
+let events = new Events();
 
 import config from './game.config.json';
 import scss from './game.scss';
 
-let events = new Events();
+import HomeBaseGameMode from './game-modes/home-base.mode/home-base.mode';
+import GeneralMapGameMode from './game-modes/general-map.mode/general-map.mode';
+import FightGameMode from './game-modes/fight.mode/fight.mode';
 
 /**
  * Main game class
@@ -23,9 +26,9 @@ export class Game {
         this.config = config;
 
         this.canvasElementId = canvasElementId;
-        this.stage = new createjs.Stage(canvasElementId);
+        this.stage = new createjs.Stage(this.canvasElementId);
 
-        this.mode = this.config.defaultMode;
+        this.gameModeName = this.config.defaultMode;
 
         events.on('game:run', this.run, this);
         events.on('game:change-mode', this.changeGameMode, this);
@@ -35,14 +38,32 @@ export class Game {
      * Start Game!
      */
     run () {
-        events.do('game:change-mode', this.mode);
+        events.do('game:change-mode', this.gameModeName);
     }
 
     /**
      * Change game mode. One each `general-map`, `home-base`, `fight`
-     * @param {string} gameMode
+     *
+     * @param {string} gameModeName
      */
-    changeGameMode (gameMode) {
+    changeGameMode (gameModeName) {
+        if (this.mode) {
+            this.mode.destroy();
+        }
+        switch (gameModeName) {
+            case 'fight':
+                this.mode = new FightGameMode();
+                break;
+            case 'general-map':
+                this.mode = new GeneralMapGameMode();
+                break;
+            case 'home-base':
+                this.mode = new HomeBaseGameMode();
+                break;
+            default:
+                throw new Error('O_O Undefined GameMode: ' + gameModeName);
+        }
+        this.mode.show();
     }
 
 }

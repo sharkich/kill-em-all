@@ -45,7 +45,7 @@ export class Events {
      * @param {any} [params]
      */
     do (eventName, ...params) {
-        console.log(`kel_event.do: ${eventName}`);
+        console.log(`kel_event.do: ${eventName}`, ...params);
         if (this.evens[eventName]) {
             this.evens[eventName].forEach((cb) => {
                 cb(...params);
