@@ -11,6 +11,8 @@ import HomeBaseGameMode from './game-modes/home-base.mode/home-base.mode';
 import GeneralMapGameMode from './game-modes/general-map.mode/general-map.mode';
 import FightGameMode from './game-modes/fight.mode/fight.mode';
 
+console.log(config);
+
 /**
  * Main game class
  */
@@ -19,14 +21,14 @@ export class Game {
     /**
      * Constructor
      *
-     * @param {string} canvasElementId
+     * @param {string} canvasId
      */
-    constructor (canvasElementId) {
+    constructor (canvasId) {
         console.log('Game constructor');
         this.config = config;
 
-        this.canvasElementId = canvasElementId;
-        this.stage = new createjs.Stage(this.canvasElementId);
+        this.stage = new createjs.Stage(canvasId);
+        createjs.Touch.enable(this.stage);
 
         this.gameModeName = this.config.defaultMode;
 
@@ -63,6 +65,7 @@ export class Game {
             default:
                 throw new Error('O_O Undefined GameMode: ' + gameModeName);
         }
+        this.mode.init(this.config, this.stage);
         this.mode.show();
     }
 

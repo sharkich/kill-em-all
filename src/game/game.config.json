@@ -1,3 +1,7 @@
 {
-    "defaultMode": "general-map"
+    "defaultMode": "fight",
+    "canvas": {
+        "width": 800,
+        "height": 600
+    }
 }

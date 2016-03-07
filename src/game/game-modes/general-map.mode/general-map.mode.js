@@ -9,6 +9,13 @@ class GeneralMapGameMode extends GameMode {
     }
 
     /**
+     * Init game mode
+     */
+    init (...params) {
+        super.init();
+    }
+
+    /**
      * Show game mode
      */
     show () {
