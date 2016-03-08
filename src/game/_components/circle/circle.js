@@ -1,3 +1,6 @@
+import Events from '../../../helpers/events/events';
+let events = new Events();
+
 /* globals window */
 const createjs = window.createjs;
 
@@ -6,6 +9,8 @@ class Circle {
         this.x = x;
         this.y = y;
         this.radius = radius;
+        this.canvasView = null;
+        this.isSelected = false;
     }
 
     /**
@@ -14,11 +19,26 @@ class Circle {
      * @returns {object} for createjs
      */
     get view () {
-        let view = new createjs.Shape();
-        view.graphics.beginFill('black').drawCircle(this.x, this.y, this.radius);
-        view.x = 100;
-        view.y = 100;
-        return view;
+        if (this.canvasView) {
+            return this.canvasView;
+        }
+
+        this.canvasView = new createjs.Shape();
+        this.canvasView.graphics.beginFill('black').drawCircle(this.x, this.y, this.radius);
+        this.canvasView.x = 100;
+        this.canvasView.y = 100;
+
+        this.canvasView.on('click', this._onClick.bind(this));
+
+        return this.canvasView;
+    }
+
+    _onClick () {
+        events.do('circle:select', this);
+        if (this.isSelected) {
+            this.canvasView.graphics.beginFill('red').drawCircle(this.x, this.y, this.radius - 1);
+        }
+        console.log(this);
     }
 
 }

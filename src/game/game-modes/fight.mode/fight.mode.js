@@ -14,6 +14,7 @@ class FightGameMode extends GameMode {
     constructor () {
         super();
         this.scale = 1;
+        this.circles = [];
     }
 
     /**
@@ -28,10 +29,12 @@ class FightGameMode extends GameMode {
 
         // dragBox
         let rect = new createjs.Graphics()
+            .beginFill('red')
+            .drawRect(0, 0, this.config.fight.map.width, this.config.fight.map.height)
             .beginFill('grey')
-            .drawRect(0, 0, this.config.fight.map.width, this.config.fight.map.height);
-        let dragBox = new createjs.Shape(rect);
-        this.dragContainer.addChild(dragBox);
+            .drawRect(1, 1, this.config.fight.map.width - 2, this.config.fight.map.height - 2);
+        let box = new createjs.Shape(rect);
+        this.dragContainer.addChild(box);
 
         this._initCircle();
 
@@ -39,16 +42,19 @@ class FightGameMode extends GameMode {
 
         this.dragContainer.on('pressmove', this._drag.bind(this));
         this.dragContainer.on('pressup', this._dragStop.bind(this));
+
+        events.on('circle:select', this._selectCircle.bind(this));
     }
 
     _initCircle () {
         for (let i = 0; i <= 200; i++) {
             let circle = new Circle({
                 x: math.getRandomInt(0, this.config.fight.map.width),
-                y: math.getRandomInt(0,  this.config.fight.map.height),
+                y: math.getRandomInt(0, this.config.fight.map.height),
                 radius: math.getRandomInt(10, 100)
             });
             this.dragContainer.addChild(circle.view);
+            this.circles.push(circle);
         }
     }
 
@@ -65,7 +71,7 @@ class FightGameMode extends GameMode {
         this.dragToX(evt.stageX - this.offset.x);
         this.dragToY(evt.stageY - this.offset.y);
 
-        console.log(this.dragContainer.x, this.dragContainer.y);
+        console.log(this.dragContainer.x, this.dragContainer.y, this.scale);
 
         this.show();
     }
@@ -75,23 +81,23 @@ class FightGameMode extends GameMode {
         this.offset = null;
     }
 
-    dragToX(x) {
+    dragToX (x) {
         const MAX_CONVAS_OFFSET_X = this.config.fight.map.width - this.config.canvas.width;
         this.dragContainer.x = this._checkCoordinat(x, MAX_CONVAS_OFFSET_X * this.scale);
     }
 
-    dragToY(y) {
+    dragToY (y) {
         const MAX_CONVAS_OFFSET_Y = this.config.fight.map.height - this.config.canvas.height;
         this.dragContainer.y = this._checkCoordinat(y, MAX_CONVAS_OFFSET_Y * this.scale);
     }
 
-    _checkCoordinat(value, maxValue) {
-        if (value > 0) {
-            return 0;
-        }
-        if (Math.abs(value) > maxValue) {
-            return -maxValue;
-        }
+    _checkCoordinat (value, maxValue) {
+        //if (value >= 0) {
+        //    return 0;
+        //}
+        //if (Math.abs(value) >= maxValue) {
+        //    return -maxValue;
+        //}
         return value;
     }
 
@@ -127,8 +133,17 @@ class FightGameMode extends GameMode {
         this.stage.scaleX = this.scale;
         this.stage.scaleY = this.scale;
 
-        console.log('zoom', this.scale);
+        console.log(this.dragContainer.x, this.dragContainer.y, this.scale);
+
         this.show();
+    }
+
+    _selectCircle (circle) {
+        this.circles.forEach((circle, index) => {
+            this.circles[index].isSelected = false;
+        });
+        circle.isSelected = true;
+        console.log('select', this, circle);
     }
 
     /**

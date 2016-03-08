@@ -41,6 +41,10 @@ export class Game {
             evt.stopImmediatePropagation();
             events.do('game:mousewheel', evt);
         });
+
+        document.getElementById(canvasId).addEventListener('click', (evt) => {
+            events.do('game:mouseclick', evt);
+        });
     }
 
     /**
@@ -59,6 +63,7 @@ export class Game {
         if (this.mode) {
             this.mode.destroy();
         }
+        this.mode = null;
         switch (gameModeName) {
             case 'fight':
                 this.mode = new FightGameMode();

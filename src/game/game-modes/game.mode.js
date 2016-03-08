@@ -1,3 +1,6 @@
+import Events from '../../helpers/events/events';
+let events = new Events();
+
 /**
  * Abstract class for Game Modes
  */
@@ -7,6 +10,8 @@ class GameMode {
      */
     constructor () {
         console.log('init Game mode');
+        // reload canvas onClick
+        events.on('game:mouseclick', this.show, this);
     }
 
     /**
@@ -22,7 +27,7 @@ class GameMode {
      * Show game mode
      */
     show () {
-        console.log('show game mode');
+        //console.log('show game mode');
         this.stage.update();
     }
 
