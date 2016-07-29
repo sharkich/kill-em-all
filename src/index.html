@@ -1,21 +1,27 @@
 <!doctype html>
-<html lang="en">
+<html>
 <head>
-  <title>kill-em-all.es6</title>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>KillEmAllLogic</title>
+  <base href="/">
+
+  {{#unless environment.production}}
+  <script src="/ember-cli-live-reload.js" type="text/javascript"></script>
+  {{/unless}}
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="icon" type="image/x-icon" href="favicon.ico">
 </head>
 <body>
-  <div id="root">
-      <div id="game">
-          <canvas
-              id="game__canvas"
-              height="600"
-              width="800"
-          >
-          </canvas>
-      </div>
-  </div>
-  <script src="https://code.createjs.com/easeljs-0.8.2.min.js"></script>
+  <app-root>Loading...</app-root>
+  
+    {{#each scripts.polyfills}}
+    <script src="{{.}}"></script>
+    {{/each}}
+    <script>
+      System.import('system-config.js').then(function () {
+        System.import('main');
+      }).catch(console.error.bind(console));
+    </script>
+  
 </body>
 </html>
